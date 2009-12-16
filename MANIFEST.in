@@ -1,0 +1,9 @@
+include AUTHORS
+include README.rst
+include MANIFEST.in
+include LICENSE
+recursive-include calabar *.py
+recursive-include docs *
+prune docs/*.pyc
+prune calabar/*.pyc
+prune docs/.build
