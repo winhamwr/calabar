@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import codecs
 import sys
+import os
 from distutils.core import setup
 
 def find_packages(root):
@@ -35,7 +36,7 @@ setup(
     url=calabar.__homepage__,
     platforms=["any"],
     license="BSD",
-    packages=find_packages(exclude=['ez_setup']),
+    packages=find_packages('calabar'),
     scripts=[],
     zip_safe=False,
     install_requires=install_requires,
