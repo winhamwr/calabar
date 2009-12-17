@@ -1,0 +1,5 @@
+USER=root
+UGROUPS=vpn
+PROGRAM=/usr/sbin/vpnc
+FALLBACK=no
+GUI=no

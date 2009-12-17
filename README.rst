@@ -23,3 +23,14 @@ to configure them on the fly so that a utrusted ser of your web app can enter
 their VPN settings and be connected without requiring any downtime or sys admin
 intervention. You also need to manage port forwarding so that tunnels don't
 conflict.
+
+
+Installation
+============
+
+    sudo apt-get install usermode
+    sudo addgroup vpn
+    sudo addgroup wes vpn
+    # Make /etc/pam.d/vpnc
+    # Make /etc/security/console.apps/vpnc
+    ln -s /usr/bin/consolehelper /usr/local/bin/vpnc

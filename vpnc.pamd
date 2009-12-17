@@ -1,0 +1,6 @@
+#%PAM-1.0
+@include common-account
+
+
+auth	sufficient	pam_rootok.so
+auth	required	pam_succeed_if.so debug user ingroup vpn
