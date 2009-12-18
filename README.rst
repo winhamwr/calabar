@@ -2,35 +2,14 @@
  calabar - VPN and SSH Tunnel Manager
 =====================================
 
-:Version: 0.0.1
-
-Introduction
+Documentation
 ============
 
-Calabar helps you define and manage multiple split-tunnel VPN connections and
-SSH tunnels over specific ports.
+Calabar is built to help you run multiple split-tunneled vpn connections and/or
+SSH tunnels and keep them all up and running while centralizing configurations.
 
-Example Problem
----------------
+For full documenation, you can build the `sphinx`_ documentation yourself or
+vist the `online calabar documentation`_
 
-Calabar is meant to solve the following class of problem:
-
-You need to connect to multiple remote LDAP servers over different VPNs
-and then connect to those LDAP server as if they were local (to keep things
-simple for your application). You want to keep those disparate VPNs up so that
-you can continue accessing the different LDAP servers and you want to be able
-to configure them on the fly so that a utrusted ser of your web app can enter
-their VPN settings and be connected without requiring any downtime or sys admin
-intervention. You also need to manage port forwarding so that tunnels don't
-conflict.
-
-
-Installation
-============
-
-    sudo apt-get install usermode
-    sudo addgroup vpn
-    sudo addgroup wes vpn
-    # Make /etc/pam.d/vpnc
-    # Make /etc/security/console.apps/vpnc
-    ln -s /usr/bin/consolehelper /usr/local/bin/vpnc
+.. _`sphinx': http://sphinx.pocoo.org/
+.. _`online calabar documentation`: http://winhamwr.github.com/calabar/
