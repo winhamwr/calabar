@@ -3,7 +3,7 @@
 =====================================
 
 Documentation
-============
+=============
 
 Calabar is built to help you run multiple split-tunneled vpn connections and/or
 SSH tunnels and keep them all up and running while centralizing configurations.

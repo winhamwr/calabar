@@ -2,7 +2,7 @@ import subprocess
 import os
 import signal
 
-class TunnelBase():
+class TunnelBase(object):
     def __init__(self, cmd, executable):
         """
         Create a tunnel that's opened using the given command and executable.
