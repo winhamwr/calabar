@@ -42,9 +42,9 @@ class TunnelBase():
         else:
             return False
 
-    def close(self, force=False):
+    def close(self, wait=True, force=False):
         """
-        Close this tunnel if currently running.
+        Close this tunnel if currently running and waits for it to finish closing.
 
         If ``force`` is given as True, close using SIGKILL to force a close.
         """
@@ -54,3 +54,5 @@ class TunnelBase():
                 sig = signal.SIGKILL
 
             os.kill(self.proc.pid, sig)
+            if wait:
+                self.proc.wait()

@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+import time
+
+if __name__ == "__main__":
+    # Run forever but don't actually do anything. For testing.
+    while True:
+        time.sleep(360)

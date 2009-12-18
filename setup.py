@@ -34,7 +34,7 @@ setup(
     platforms=["any"],
     license="BSD",
     packages=find_packages('calabar'),
-    scripts=[],
+    scripts=["bin/calabard", "bin/cal_run_forever"],
     zip_safe=False,
     install_requires=install_requires,
     extra_requires={
