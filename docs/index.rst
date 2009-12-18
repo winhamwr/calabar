@@ -11,6 +11,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   introduction
+   configuration
+
+
 Indices and tables
 ==================
 
