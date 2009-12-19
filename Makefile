@@ -6,3 +6,6 @@ removepyc:
 
 docs:
 	cd docs && make html;
+
+ghdocs:
+	scripts/doc2ghpages
