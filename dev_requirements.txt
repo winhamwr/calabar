@@ -1,2 +1,4 @@
 sphinx>=0.6
 nose>=0.11
+
+-e git+git://github.com/winhamwr/sphinx-to-github.git#egg=sphinx-to-github

@@ -37,8 +37,7 @@ setup(
     scripts=["bin/calabard", "bin/cal_run_forever"],
     zip_safe=False,
     install_requires=install_requires,
-    extra_requires={
-    },
+    extra_requires={},
     cmdclass = {},
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
