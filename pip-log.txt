@@ -1,0 +1,77 @@
+--editable=git+git://github.com/certik/sphinx-to-github.git@29536b4 is not the right format; it must have #egg=Package
+Exception information:
+Traceback (most recent call last):
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 482, in main
+    self.run(options, args)
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 673, in run
+    for req in parse_requirements(filename, finder=finder, options=options):
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 4112, in parse_requirements
+    line, comes_from=comes_from, default_vcs=options.default_vcs)
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 1682, in from_editable
+    name, url = parse_editable(editable_req, default_vcs)
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 4478, in parse_editable
+    % editable_req)
+InstallationError: --editable=git+git://github.com/certik/sphinx-to-github.git@29536b4 is not the right format; it must have #egg=Package
+------------------------------------------------------------
+/home/wes/.virtualenvs/pstat_dev/bin/pip run on Fri Dec 18 18:56:47 2009
+Exception:
+Traceback (most recent call last):
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 482, in main
+    self.run(options, args)
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 673, in run
+    for req in parse_requirements(filename, finder=finder, options=options):
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 4112, in parse_requirements
+    line, comes_from=comes_from, default_vcs=options.default_vcs)
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 1687, in from_editable
+    return cls(name, comes_from, source_dir=source_dir, editable=True, url=url)
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 1658, in __init__
+    req = pkg_resources.Requirement.parse(req)
+  File "build/bdist.linux-i686/egg/pkg_resources.py", line 2469, in parse
+    reqs = list(parse_requirements(s))
+  File "build/bdist.linux-i686/egg/pkg_resources.py", line 2395, in parse_requirements
+    line, p, specs = scan_list(VERSION,LINE_END,line,p,(1,2),"version spec")
+  File "build/bdist.linux-i686/egg/pkg_resources.py", line 2363, in scan_list
+    raise ValueError("Expected "+item_name+" in",line,"at",line[p:])
+ValueError: ('Expected version spec in', 'sphinx-to-github@29536b4', 'at', '@29536b4')
+------------------------------------------------------------
+/home/wes/.virtualenvs/pstat_dev/bin/pip run on Fri Dec 18 18:57:32 2009
+Obtaining sphinx-to-github from git+git://github.com/certik/sphinx-to-github.git@29536b4#egg=sphinx-to-github (from -r dev_requirements.txt (line 4))
+  Cloning git://github.com/certik/sphinx-to-github.git (to 29536b4) to /home/wes/.virtualenvs/pstat_dev/src/sphinx-to-github
+  Found command git at /usr/bin/git
+  Running command /usr/bin/git clone -q git://github.com/certik/sphinx-to-github.git /home/wes/.virtualenvs/pstat_dev/src/sphinx-to-github
+  Running command /usr/bin/git tag
+  Running command /usr/bin/git branch -r
+    origin/HEAD
+    origin/master
+  Running command /usr/bin/git rev-parse origin/HEAD
+  29536b4a68ef92be7f1c09e23b55ca4efe34342b
+  Running command /usr/bin/git rev-parse origin/master
+  29536b4a68ef92be7f1c09e23b55ca4efe34342b
+  Could not find a tag or branch '29536b4', assuming commit.
+  Running command /usr/bin/git checkout -q 29536b4
+  Running setup.py egg_info for package sphinx-to-github
+    Traceback (most recent call last):
+      File "<string>", line 14, in <module>
+    IOError: [Errno 2] No such file or directory: '/home/wes/.virtualenvs/pstat_dev/src/sphinx-to-github/setup.py'
+    Complete output from command python setup.py egg_info:
+    Traceback (most recent call last):
+
+  File "<string>", line 14, in <module>
+
+IOError: [Errno 2] No such file or directory: '/home/wes/.virtualenvs/pstat_dev/src/sphinx-to-github/setup.py'
+
+----------------------------------------
+Command python setup.py egg_info failed with error code 1
+Exception information:
+Traceback (most recent call last):
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 482, in main
+    self.run(options, args)
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 675, in run
+    requirement_set.install_files(finder, force_root_egg_info=self.bundle)
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 2413, in install_files
+    req_to_install.run_egg_info()
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 1827, in run_egg_info
+    command_desc='python setup.py egg_info')
+  File "/home/wes/.virtualenvs/pstat_dev/lib/python2.5/site-packages/pip-0.6-py2.5.egg/pip.py", line 4347, in call_subprocess
+    % (command_desc, proc.returncode))
+InstallationError: Command python setup.py egg_info failed with error code 1

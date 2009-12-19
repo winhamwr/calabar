@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to Calabar’s documentation! &mdash; Calabar v0.0.1.dev documentation</title>
+    <title>Configuring calabard &mdash; Calabar v0.0.1.dev documentation</title>
     <link rel="stylesheet" href="static/default.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -19,8 +19,8 @@
     </script>
     <script type="text/javascript" src="static/jquery.js"></script>
     <script type="text/javascript" src="static/doctools.js"></script>
-    <link rel="top" title="Calabar v0.0.1.dev documentation" href="" />
-    <link rel="next" title="calabar - VPN and SSH Tunnel Manager" href="introduction.html" /> 
+    <link rel="top" title="Calabar v0.0.1.dev documentation" href="index.html" />
+    <link rel="prev" title="calabar - VPN and SSH Tunnel Manager" href="introduction.html" /> 
   </head>
   <body>
     <div class="related">
@@ -31,8 +31,8 @@
              accesskey="I">index</a></li>
         <li class="right" >
           <a href="introduction.html" title="calabar - VPN and SSH Tunnel Manager"
-             accesskey="N">next</a> |</li>
-        <li><a href="">Calabar v0.0.1.dev documentation</a> &raquo;</li> 
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Calabar v0.0.1.dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -41,32 +41,28 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="welcome-to-calabar-s-documentation">
-<h1>Welcome to Calabar&#8217;s documentation!<a class="headerlink" href="#welcome-to-calabar-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Contents:</p>
-<ul>
-<li class="toctree-l1"><a class="reference external" href="introduction.html">calabar - VPN and SSH Tunnel Manager</a><ul>
-<li class="toctree-l2"><a class="reference external" href="introduction.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference external" href="introduction.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference external" href="introduction.html#usage">Usage</a></li>
-<li class="toctree-l2"><a class="reference external" href="introduction.html#bug-tracker">Bug Tracker</a></li>
-<li class="toctree-l2"><a class="reference external" href="introduction.html#license">License</a></li>
-<li class="toctree-l2"><a class="reference external" href="introduction.html#versioning">Versioning</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference external" href="configuration.html">Configuring calabard</a><ul>
-<li class="toctree-l2"><a class="reference external" href="configuration.html#config-file-format">Config File Format</a></li>
-</ul>
-</li>
-</ul>
+  <div class="section" id="configuring-calabard">
+<h1>Configuring calabard<a class="headerlink" href="#configuring-calabard" title="Permalink to this headline">¶</a></h1>
+<p><tt class="docutils literal"><span class="pre">calabard</span></tt> follows the normal unixy convention os using text files for config.
+By default, <tt class="docutils literal"><span class="pre">calabard</span></tt> looks for its configuration file at <tt class="docutils literal"><span class="pre">/etc/calabar/default.conf</span></tt>.
+This file tells <tt class="docutils literal"><span class="pre">calabard</span></tt> where to look for the various executables, which
+tunnels to set up, how to set them up, etc.</p>
+<div class="section" id="config-file-format">
+<h2>Config File Format<a class="headerlink" href="#config-file-format" title="Permalink to this headline">¶</a></h2>
+<p>The config file conforms to the <a class="reference external" href="http://docs.python.org/library/configparser.html">ConfigParser</a> format, which is similar to
+the Microsoft Windows INI file structure. It has one caveat though, in that
+certain fields accept a list of <a class="reference external" href="http://docs.python.org/library/csv.html">comma-separated values</a>.</p>
+<p>An example configuration file might be:</p>
+<div class="highlight-python"><pre>[vpnc]
+bin = /usr/sbin/vpnc
+conn_script = /etc/vpnc/vpnc-script
+
+[tunnel:foo]
+type = vpnc
+conf = /etc/calabar/foo.conf
+ips = 10.10.250.1, 192.168.10.2</pre>
 </div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference external" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference external" href="modindex.html"><em>Module Index</em></a></li>
-<li><a class="reference external" href="search.html"><em>Search Page</em></a></li>
-</ul>
+</div>
 </div>
 
 
@@ -75,20 +71,20 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="">Table Of Contents</a></h3>
+            <h3><a href="index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="">Welcome to Calabar&#8217;s documentation!</a><ul>
+<li><a class="reference external" href="">Configuring calabard</a><ul>
+<li><a class="reference external" href="#config-file-format">Config File Format</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
-            <h4>Next topic</h4>
+            <h4>Previous topic</h4>
             <p class="topless"><a href="introduction.html"
-                                  title="next chapter">calabar - VPN and SSH Tunnel Manager</a></p>
+                                  title="previous chapter">calabar - VPN and SSH Tunnel Manager</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
-              <li><a href="sources/index.txt"
+              <li><a href="sources/configuration.txt"
                      rel="nofollow">Show Source</a></li>
             </ul>
           <div id="searchbox" style="display: none">
@@ -116,8 +112,8 @@
              >index</a></li>
         <li class="right" >
           <a href="introduction.html" title="calabar - VPN and SSH Tunnel Manager"
-             >next</a> |</li>
-        <li><a href="">Calabar v0.0.1.dev documentation</a> &raquo;</li> 
+             >previous</a> |</li>
+        <li><a href="index.html">Calabar v0.0.1.dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
