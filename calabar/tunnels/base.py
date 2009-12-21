@@ -14,6 +14,7 @@ class TunnelBase(object):
         """
         self.cmd = cmd
         self.executable = executable
+        self.proc = None
 
     def open(self):
         """
@@ -46,7 +47,7 @@ class TunnelBase(object):
         """
         Close this tunnel if currently running and waits for it to finish closing.
 
-        If ``force`` is given as True, close using SIGKILL to force a close.
+        If ``force`` is given as True, close using :mod:signal.SIGKILL to force a close.
         """
         if self.is_running():
             sig = signal.SIGTERM
@@ -56,3 +57,10 @@ class TunnelBase(object):
             os.kill(self.proc.pid, sig)
             if wait:
                 self.proc.wait()
+
+    def handle_closed(self, exit_status):
+        """
+        Handle the tunnel process having closed externally. There was probably
+        some sort of error.
+        """
+        self.proc = None

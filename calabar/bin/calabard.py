@@ -4,6 +4,7 @@ import optparse
 from ConfigParser import ConfigParser
 
 from calabar.tunnels import TunnelManager
+from calabar.tunnels.vpnc import VpncTunnel
 
 VPNC = 'vpnc'
 VPNC_CONF = '/etc/calabar/default.conf'
@@ -18,6 +19,8 @@ OPTION_LIST = (
 def run_tunnels(configfile=VPNC_CONF):
     """Run the configured VPN/SSH tunnels and keep them running"""
     tm = TunnelManager(configfile)
+    t = VpncTunnel(configfile)
+    tm.t = t
     tm.start_tunnels()
 
     while True:

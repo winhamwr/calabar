@@ -28,7 +28,6 @@ class TunnelManager():
         """
         Start all of the configured tunnels and register to keep them running.
         """
-        self.t = VpncTunnel(self.conf)
         self.t.open()
 
     def continue_tunnels(self):
@@ -36,7 +35,7 @@ class TunnelManager():
         Ensure that all of the tunnels are still running.
         """
         if not self.t.is_running():
-            print "VPNC EXITED"
+            print "TUNNEL EXITED"
             print "RESTARTING"
             self.t.open()
         else:
@@ -53,8 +52,13 @@ class TunnelManager():
         """
         Handle a closed child.
 
-        Call wait() on the process so that it's not defunct.
+        Call :mod:os.wait() on the process so that it's not defunct.
         """
-        print "CHILD CLOSED"
-        os.wait()
+        assert signum == signal.SIGCHLD
+
+        print "CHILD TUNNEL CLOSED"
+        pid, exit_status = os.wait()
+
+        if self.t.proc and self.t.proc.pid == pid:
+            self.t.handle_closed(exit_status)
 
