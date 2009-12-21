@@ -131,10 +131,16 @@ def _get_vpnc_conf(conf, section_name):
     tun_conf = {}
     tun_conf['type'] = 'vpnc'
     tun_conf['conf'] = conf.get(section_name, 'conf')
-    tun_conf['ips'] = conf.get(section_name, 'ips')
+
+    # Optional parts
+    tun_conf['ips'] = []
+    if conf.has_option(section_name, 'ips'):
+        tun_conf['ips'] = conf.get(section_name, 'ips')
 
     # Get the binary/executable for VPNC
-    tun_conf['executable'] = conf.get('vpnc', 'bin')
+    tun_conf['executable'] = None
+    if conf.has_option('vpnc', 'bin'):
+        tun_conf['executable'] = conf.get('vpnc', 'bin')
 
     return tun_conf
 

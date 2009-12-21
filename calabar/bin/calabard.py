@@ -7,10 +7,11 @@ from calabar.tunnels import TunnelManager
 from calabar.tunnels.vpnc import VpncTunnel
 
 VPNC_CONF = '/etc/calabar/default.conf'
+CALABAR_CONF = '/etc/calabar/calabar.conf'
 
 OPTION_LIST = (
     optparse.make_option('-c', '--configfile', action="store", dest="configfile",
-                         default=VPNC_CONF,
+                         default=CALABAR_CONF,
                          help="The vpnc configuration file to use"),
 )
 
@@ -20,11 +21,9 @@ def run_tunnels(configfile='/etc/calabar/calabar.conf'):
     config = SafeConfigParser()
     config.read(configfile)
 
-    tm = TunnelManager(config)
+    tm = TunnelManager()
     tm.load_tunnels(config)
 
-    t = VpncTunnel(configfile)
-    tm.t = t
     tm.start_tunnels()
 
     while True:

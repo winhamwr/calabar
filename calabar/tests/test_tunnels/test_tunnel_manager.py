@@ -85,6 +85,21 @@ class TestStartingSingleTunnel(unittest.TestCase):
         self.assertTrue(is_really_running(self.t))
 
 
+class TestVpncParserOpts(unittest.TestCase):
+    """Test that various options don't throw errors parsing"""
+
+    def test_minimums(self):
+        self.conf = SafeConfigParser()
+        self.sec1 = 'tunnel:testvpnc'
+        self.conf.add_section(self.sec1)
+        self.conf.set(self.sec1, 'type', 'vpnc')
+        self.conf.set(self.sec1, 'conf', '/path/to/conf.conf')
+
+        tm = TunnelManager()
+        tm.load_tunnels(self.conf)
+
+        self.assertEqual(len(tm.tunnels), 1)
+
 class TestVpncParser(unittest.TestCase):
 
     def setUp(self):
