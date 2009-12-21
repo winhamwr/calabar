@@ -1,12 +1,11 @@
 import subprocess
 import time
 import optparse
-from ConfigParser import ConfigParser
+from ConfigParser import SafeConfigParser
 
 from calabar.tunnels import TunnelManager
 from calabar.tunnels.vpnc import VpncTunnel
 
-VPNC = 'vpnc'
 VPNC_CONF = '/etc/calabar/default.conf'
 
 OPTION_LIST = (
@@ -16,9 +15,14 @@ OPTION_LIST = (
 )
 
 
-def run_tunnels(configfile=VPNC_CONF):
+def run_tunnels(configfile='/etc/calabar/calabar.conf'):
     """Run the configured VPN/SSH tunnels and keep them running"""
-    tm = TunnelManager(configfile)
+    config = SafeConfigParser()
+    config.read(configfile)
+
+    tm = TunnelManager(config)
+    tm.load_tunnels(config)
+
     t = VpncTunnel(configfile)
     tm.t = t
     tm.start_tunnels()

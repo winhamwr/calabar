@@ -3,7 +3,7 @@ import os
 import signal
 
 class TunnelBase(object):
-    def __init__(self, cmd, executable):
+    def __init__(self, cmd, executable, name='default'):
         """
         Create a tunnel that's opened using the given command and executable.
 
@@ -15,6 +15,7 @@ class TunnelBase(object):
         self.cmd = cmd
         self.executable = executable
         self.proc = None
+        self.name = name
 
     def open(self):
         """

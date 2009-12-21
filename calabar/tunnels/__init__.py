@@ -8,38 +8,58 @@ import signal
 import os
 
 from calabar.tunnels.vpnc import VpncTunnel
+from calabar.tunnels.base import TunnelBase
+
+class TunnelsAlreadyLoadedException(Exception):
+    """Once tunnels are loaded the first time, other methods must be used to
+    update them"""
+    pass
 
 class TunnelManager():
-    def __init__(self, conf):
+    def __init__(self):
         """
-        Create a new ``TunnelManager`` using the given ConfigParser.
+        Create a new ``TunnelManager`` and register for SIG_CHLD signals.
         """
-        self.conf = conf
-        self._load_conf(self.conf)
+        self.tunnels = []
         self._register_for_close()
 
-    def _load_conf(self, conf):
+    def load_tunnels(self, config):
         """
-        Load all of the appropriate options from the ConfigParser.
+        Load config information to create all required tunnels.
         """
-        pass
+        if self.tunnels:
+            raise TunnelsAlreadyLoadedException("TunnelManager.load_tunnels can't be called after tunnels have already been loaded. Use update_tunnels() instead")
+        tunnel_confs = get_tunnels(config)
+
+        for name, tunnel_conf in tunnel_confs.items():
+            if tunnel_conf['type'] == 'vpnc':
+                t = VpncTunnel(tunnel_conf['conf'], name=name)
+            elif tunnel_conf['type'] == 'base':
+                t = TunnelBase(tunnel_conf['cmd'], tunnel_conf['executable'],
+                               name=name)
+            else:
+                raise NotImplementedError()
+
+            self.tunnels.append(t)
 
     def start_tunnels(self):
         """
         Start all of the configured tunnels and register to keep them running.
         """
-        self.t.open()
+        for t in self.tunnels:
+            t.open()
 
     def continue_tunnels(self):
         """
         Ensure that all of the tunnels are still running.
         """
-        if not self.t.is_running():
-            print "TUNNEL EXITED"
-            print "RESTARTING"
-            self.t.open()
-        else:
-            print "proc: %s running" % self.t.proc.pid
+        for t in self.tunnels:
+            if not t.is_running():
+                print "TUNNEL [%s] EXITED" % t.name
+                print "RESTARTING"
+                t.open()
+            else:
+                print "[%s]:%s running" % (t.name, t.proc.pid)
 
     def _register_for_close(self):
         """
@@ -59,6 +79,69 @@ class TunnelManager():
         print "CHILD TUNNEL CLOSED"
         pid, exit_status = os.wait()
 
-        if self.t.proc and self.t.proc.pid == pid:
-            self.t.handle_closed(exit_status)
+        for t in self.tunnels:
+            if t.proc and t.proc.pid == pid:
+                t.handle_closed(exit_status)
 
+TUNNEL_PREFIX = 'tunnel:'
+
+def get_tunnels(conf):
+    """
+    Return a dictionary of dictionaries containg tunnel configurations based on the
+    given SafeConfigParser instance.
+
+    An example return value might be::
+
+        {
+            'foo':
+                {
+                    'type': 'vpnc',
+                    'conf': '/etc/calabar/foo.conf',
+                    'ips': [10.10.254.1]
+                },
+            'bar':
+                {
+                    'type': 'ssh',
+                    'from': 'root@10.10.251.2:386',
+                    'to': '127.0.0.1:387
+                }
+        }
+    """
+    tun_confs = {}
+
+    for section in conf.sections():
+        if section.startswith(TUNNEL_PREFIX):
+            tun_type = conf.get(section, 'type')
+            if tun_type == 'vpnc':
+                tun_conf = _get_vpnc_conf(conf, section)
+            elif tun_type == 'ssh':
+                tun_conf = _get_ssh_conf(conf, section)
+            elif tun_type == 'base':
+                tun_conf = _get_base_conf(conf, section)
+            else:
+                raise NotImplementedError("The tunnel type [%s] isn't supported" % tun_type)
+
+            tun_name = section[len(TUNNEL_PREFIX):]
+            tun_confs[tun_name] = tun_conf
+
+    return tun_confs
+
+def _get_vpnc_conf(conf, section_name):
+    tun_conf = {}
+    tun_conf['type'] = 'vpnc'
+    tun_conf['conf'] = conf.get(section_name, 'conf')
+    tun_conf['ips'] = conf.get(section_name, 'ips')
+
+    return tun_conf
+
+def _get_base_conf(conf, section_name):
+    tun_conf = {}
+    tun_conf['type'] = 'base'
+    cmd = conf.get(section_name, 'cmd')
+    tun_conf['cmd'] = cmd.split()
+    tun_conf['executable'] = conf.get(section_name, 'executable')
+
+    return tun_conf
+
+def _get_ssh_conf(conf, section_name):
+    raise NotImplementedError('SSH config not yet implemented')
