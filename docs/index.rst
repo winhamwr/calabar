@@ -13,6 +13,7 @@ Contents:
 
    introduction
    configuration
+   reference/index
 
 
 Indices and tables
