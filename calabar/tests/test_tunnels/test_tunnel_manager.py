@@ -17,10 +17,11 @@ PROC_NOT_RUNNING = [
 def is_really_running(tunnel):
     if tunnel.proc:
         pt = psi.process.ProcessTable()
-        proc = pt[tunnel.proc.pid]
-        status = proc.status
-        if not status in PROC_NOT_RUNNING:
-            return True
+        proc = pt.get(tunnel.proc.pid, None)
+        if proc:
+            status = proc.status
+            if not status in PROC_NOT_RUNNING:
+                return True
 
     return False
 

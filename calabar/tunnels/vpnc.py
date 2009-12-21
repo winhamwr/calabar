@@ -4,14 +4,15 @@ class VpncTunnel(TunnelBase):
     PROC_NAME = 'calabar_vpnc'
     EXEC = '/usr/sbin/vpnc'
 
-    def __init__(self, conf_file, *args, **kwargs):
+    def __init__(self, conf_file, executable=None, *args, **kwargs):
         """
         Create a new vpnc tunnel using the given vpn configuration file.
         """
         self.conf_file = conf_file
 
         cmd = self._build_cmd(self.conf_file)
-        executable = VpncTunnel.EXEC
+        if not executable:
+            executable = VpncTunnel.EXEC
 
         super(VpncTunnel, self).__init__(cmd, executable, *args, **kwargs)
 

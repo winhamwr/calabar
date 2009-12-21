@@ -33,7 +33,8 @@ class TunnelManager():
 
         for name, tunnel_conf in tunnel_confs.items():
             if tunnel_conf['type'] == 'vpnc':
-                t = VpncTunnel(tunnel_conf['conf'], name=name)
+                t = VpncTunnel(tunnel_conf['conf'],
+                               executable=tunnel_conf['executable'], name=name)
             elif tunnel_conf['type'] == 'base':
                 t = TunnelBase(tunnel_conf['cmd'], tunnel_conf['executable'],
                                name=name)
@@ -131,6 +132,9 @@ def _get_vpnc_conf(conf, section_name):
     tun_conf['type'] = 'vpnc'
     tun_conf['conf'] = conf.get(section_name, 'conf')
     tun_conf['ips'] = conf.get(section_name, 'ips')
+
+    # Get the binary/executable for VPNC
+    tun_conf['executable'] = conf.get('vpnc', 'bin')
 
     return tun_conf
 
