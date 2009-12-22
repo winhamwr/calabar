@@ -15,13 +15,16 @@ PROC_NOT_RUNNING = [
     psi.process.PROC_STATUS_STOPPED
 ]
 def is_really_running(tunnel):
-    if tunnel.proc:
-        pt = psi.process.ProcessTable()
+    pt = psi.process.ProcessTable()
+    try:
         proc = pt.get(tunnel.proc.pid, None)
-        if proc:
-            status = proc.status
-            if not status in PROC_NOT_RUNNING:
-                return True
+    except AttributeError:
+        # we might not actually have a tunnel.proc or it might poof while we're checking
+        return False
+    if proc:
+        status = proc.status
+        if not status in PROC_NOT_RUNNING:
+            return True
 
     return False
 
@@ -119,7 +122,16 @@ class TestVpncParser(unittest.TestCase):
         self.tm.load_tunnels(self.conf)
         t = self.tm.tunnels[0]
 
-        self.assertEqual(t.cmd, ['calabar_vpnc', '/path/to/conf.conf', '--no-detach', '--local-port', '0', '--non-inter'])
+        expected_cmd = ['calabar_vpnc', '/path/to/conf.conf', '--no-detach',
+                        '--local-port', '0', '--non-inter', '--script']
+        self.assertEqual(len(t.cmd), len(expected_cmd)+1) # +1 for the actual script
+
+        for expected_arg in expected_cmd:
+            self.assertTrue(expected_arg in t.cmd)
+
+        # Now check the last arg and make sure it's to /tmp/...
+        self.assertTrue(t.cmd[-1].startswith('/tmp/'))
+
 
     def test_executable(self):
         self.tm.load_tunnels(self.conf)
