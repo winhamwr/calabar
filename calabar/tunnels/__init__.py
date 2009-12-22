@@ -7,10 +7,29 @@ This module encapsulates various tunnel processes and their management.
 import signal
 import os
 import sys
-
+import psi.process
 
 TUN_TYPE_STR = 'tunnel_type' # Configuration/dictionary key for the type of tunnel
 # Should match the tunnel_type argument to Tunnel __init__ methods
+
+PROC_NOT_RUNNING = [
+    psi.process.PROC_STATUS_DEAD,
+    psi.process.PROC_STATUS_ZOMBIE,
+    psi.process.PROC_STATUS_STOPPED
+]
+def is_really_running(tunnel):
+    pt = psi.process.ProcessTable()
+    try:
+        proc = pt.get(tunnel.proc.pid, None)
+    except AttributeError:
+        # we might not actually have a tunnel.proc or it might poof while we're checking
+        return False
+    if proc:
+        status = proc.status
+        if not status in PROC_NOT_RUNNING:
+            return True
+
+    return False
 
 class TunnelsAlreadyLoadedException(Exception):
     """Once tunnels are loaded the first time, other methods must be used to
@@ -114,6 +133,8 @@ class TunnelManager():
             if t.closing and not t.is_running():
                 # Assume the same exit_status
                 t.handle_closed(exit_status)
+
+
 
 TUNNEL_PREFIX = 'tunnel:'
 

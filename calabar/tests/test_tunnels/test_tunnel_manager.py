@@ -1,32 +1,14 @@
 import unittest
 import os
-import psi.process
 import subprocess
 import time
 import signal
 from ConfigParser import SafeConfigParser
 
-from calabar.tunnels import TunnelManager, TunnelsAlreadyLoadedException, ExecutableNotFound
+from calabar.tunnels import TunnelManager, TunnelsAlreadyLoadedException, ExecutableNotFound, is_really_running
 from calabar.tunnels.base import TunnelBase, which
 
-PROC_NOT_RUNNING = [
-    psi.process.PROC_STATUS_DEAD,
-    psi.process.PROC_STATUS_ZOMBIE,
-    psi.process.PROC_STATUS_STOPPED
-]
-def is_really_running(tunnel):
-    pt = psi.process.ProcessTable()
-    try:
-        proc = pt.get(tunnel.proc.pid, None)
-    except AttributeError:
-        # we might not actually have a tunnel.proc or it might poof while we're checking
-        return False
-    if proc:
-        status = proc.status
-        if not status in PROC_NOT_RUNNING:
-            return True
 
-    return False
 
 class TearDownRunForever(unittest.TestCase):
     def tearDown(self):

@@ -2,7 +2,7 @@ import subprocess
 import os
 import signal
 
-from calabar.tunnels import TUN_TYPE_STR, ExecutableNotFound, TunnelTypeDoesNotMatch
+from calabar.tunnels import TUN_TYPE_STR, ExecutableNotFound, TunnelTypeDoesNotMatch, is_really_running
 
 class TunnelBase(object):
     TUNNEL_TYPE = 'base'
@@ -53,7 +53,7 @@ class TunnelBase(object):
 
     def is_running(self):
         if self.proc:
-            return self.proc.poll() == None
+            return is_really_running(self)
         else:
             return False
 
