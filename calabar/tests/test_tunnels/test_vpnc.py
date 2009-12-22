@@ -82,8 +82,15 @@ class TestSplitTunneling(unittest.TestCase):
         tun_conf_d = VpncTunnel.parse_configuration(self.cp, self.sec)
         t = VpncTunnel(**tun_conf_d)
 
-        os.path.isfile(t.get_split_tunnel_script_file())
+        os.path.isfile(t.get_split_tunnel_script_fp())
 
+    def test_file_executable(self):
+        tun_conf_d = VpncTunnel.parse_configuration(self.cp, self.sec)
+        t = VpncTunnel(**tun_conf_d)
+
+        fp = t.get_split_tunnel_script_fp()
+        isfile = os.path.isfile(fp)
+        self.assertTrue(isfile and os.access(fp, os.X_OK))
 
 class TestInvalidConf(unittest.TestCase):
 

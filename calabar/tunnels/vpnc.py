@@ -1,5 +1,9 @@
+from __future__ import with_statement
+
 import csv
-from tempfile import NamedTemporaryFile
+import os
+import stat
+from hashlib import md5
 
 from calabar.tunnels import TUN_TYPE_STR
 from calabar.tunnels.base import TunnelBase, TunnelTypeDoesNotMatch
@@ -43,7 +47,7 @@ class VpncTunnel(TunnelBase):
         """
         cmd = [VpncTunnel.PROC_NAME, conf_file]
 
-        script_file = self.get_split_tunnel_script_file(ips)
+        script_file = self.get_split_tunnel_script_fp(ips)
         script = ['--script', script_file]
 
         stay_in_foreground = ['--no-detach']
@@ -54,7 +58,7 @@ class VpncTunnel(TunnelBase):
 
         return cmd
 
-    def get_split_tunnel_script_file(self, ips=None):
+    def get_split_tunnel_script_fp(self, ips=None):
         """
         Get the path to the split-tunneling configuration script.
 
@@ -66,13 +70,22 @@ class VpncTunnel(TunnelBase):
                 ips = []
             self._set_split_tunnel_script_file(ips)
 
-        return self._tun_script_f.name
+        return self._tun_script_f
+
+    def _gen_script_fname(self, ips):
+        ip_hash = md5("".join(ips).encode('utf-8')).hexdigest()[12]
+        fpath = os.path.join('/tmp/', ip_hash)
+
+        return fpath
 
     def _set_split_tunnel_script_file(self, ips):
         contents = self._build_split_tunnel_script(ips)
-        self._tun_script_f = NamedTemporaryFile('w')
-        self._tun_script_f.write(contents)
-        self._tun_script_f.flush()
+
+        fpath = self._gen_script_fname(ips)
+        with open(fpath, 'w') as tun_script:
+            self._tun_script_f = fpath
+            tun_script.write(contents)
+        os.chmod(self._tun_script_f, stat.S_IXUSR | stat.S_IWUSR | stat.S_IRUSR)
 
         return self._tun_script_f
 
