@@ -8,12 +8,25 @@ import signal
 import os
 import sys
 
-from calabar.tunnels.vpnc import VpncTunnel
-from calabar.tunnels.base import TunnelBase, ExecutableNotFound
+
+TUN_TYPE_STR = 'tunnel_type' # Configuration/dictionary key for the type of tunnel
+# Should match the tunnel_type argument to Tunnel __init__ methods
 
 class TunnelsAlreadyLoadedException(Exception):
     """Once tunnels are loaded the first time, other methods must be used to
     update them"""
+    pass
+
+class ExecutableNotFound(Exception):
+    """
+    The given tunnel executable wasn't found or isn't executable.
+    """
+    pass
+
+class TunnelTypeDoesNotMatch(Exception):
+    """
+    The given ``tun_type`` doesn't match expected Tunnel.
+    """
     pass
 
 class TunnelManager():
@@ -30,19 +43,28 @@ class TunnelManager():
         """
         if self.tunnels:
             raise TunnelsAlreadyLoadedException("TunnelManager.load_tunnels can't be called after tunnels have already been loaded. Use update_tunnels() instead")
-        tunnel_confs = get_tunnels(config)
+        tun_confs_d = get_tunnels(config)
 
-        for name, tunnel_conf in tunnel_confs.items():
-            if tunnel_conf['type'] == 'vpnc':
-                t = VpncTunnel(tunnel_conf['conf'],
-                               executable=tunnel_conf['executable'], name=name)
-            elif tunnel_conf['type'] == 'base':
-                t = TunnelBase(tunnel_conf['cmd'], tunnel_conf['executable'],
-                               name=name)
-            else:
-                raise NotImplementedError()
-
+        for name, tun_conf_d in tun_confs_d.items():
+            t = self.load_tunnel(name, tun_conf_d)
             self.tunnels.append(t)
+
+    def load_tunnel(self, tunnel_name, tun_conf_d):
+        """
+        Create and return a tunnel instance from a ``tun_conf_d`` dictionary.
+
+        ``tun_conf_d`` is a dictionary matching the output of a tunnel's
+        implementation of :mod:`calabar.tunnels.base.TunnelBase:parse_configuration`
+        method.
+        """
+        from calabar.conf import TUNNELS
+        tun_type = tun_conf_d[TUN_TYPE_STR]
+        for tunnel in TUNNELS:
+            if tunnel.TUNNEL_TYPE == tun_type:
+                t = tunnel(name=tunnel_name, **tun_conf_d)
+                return t
+
+        raise NotImplementedError()
 
     def start_tunnels(self):
         """
@@ -93,8 +115,6 @@ class TunnelManager():
 
 TUNNEL_PREFIX = 'tunnel:'
 
-TUNNELS = [VpncTunnel, TunnelBase]
-
 def get_tunnels(config):
     """
     Return a dictionary of dictionaries containg tunnel configurations based on the
@@ -105,13 +125,13 @@ def get_tunnels(config):
         {
             'foo':
                 {
-                    'type': 'vpnc',
-                    'conf': '/etc/calabar/foo.conf',
+                    'tunnel_type': 'vpnc',
+                    'conf_file': '/etc/calabar/foo.conf',
                     'ips': [10.10.254.1]
                 },
             'bar':
                 {
-                    'type': 'ssh',
+                    'tunnel_type': 'ssh',
                     'from': 'root@10.10.251.2:386',
                     'to': '127.0.0.1:387
                 }
@@ -135,9 +155,10 @@ def parse_tunnel(config, section):
     dictionary using all configured tunnel types and their configuration
     parsers.
     """
-    tun_type = config.get(section, 'type')
+    from calabar.conf import TUNNELS
+    tun_type = config.get(section, TUN_TYPE_STR)
     for tunnel in TUNNELS:
-        if tun_type == tunnel.TYPE:
+        if tun_type == tunnel.TUNNEL_TYPE:
             tun_conf_d = tunnel.parse_configuration(config, section)
             return tun_conf_d
 

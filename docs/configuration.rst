@@ -21,8 +21,8 @@ An example configuration file might be::
     conn_script = /etc/vpnc/vpnc-script
 
     [tunnel:foo]
-    type = vpnc
-    conf = /etc/calabar/foo.conf
+    tunnel_type = vpnc
+    conf_file = /etc/calabar/foo.conf
     ips = 10.10.250.1, 192.168.10.2
 
 

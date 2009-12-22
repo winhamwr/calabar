@@ -92,8 +92,8 @@ class TestVpncParserOpts(unittest.TestCase):
         self.conf = SafeConfigParser()
         self.sec1 = 'tunnel:testvpnc'
         self.conf.add_section(self.sec1)
-        self.conf.set(self.sec1, 'type', 'vpnc')
-        self.conf.set(self.sec1, 'conf', '/path/to/conf.conf')
+        self.conf.set(self.sec1, 'tunnel_type', 'vpnc')
+        self.conf.set(self.sec1, 'conf_file', '/path/to/conf.conf')
 
         tm = TunnelManager()
         tm.load_tunnels(self.conf)
@@ -106,8 +106,8 @@ class TestVpncParser(unittest.TestCase):
         self.conf = SafeConfigParser()
         self.sec1 = 'tunnel:testvpnc'
         self.conf.add_section(self.sec1)
-        self.conf.set(self.sec1, 'type', 'vpnc')
-        self.conf.set(self.sec1, 'conf', '/path/to/conf.conf')
+        self.conf.set(self.sec1, 'tunnel_type', 'vpnc')
+        self.conf.set(self.sec1, 'conf_file', '/path/to/conf.conf')
         self.conf.set(self.sec1, 'ips', '10.10.10.10, 5.5.5.5')
 
         self.vpnc_sec = 'vpnc'
@@ -148,7 +148,7 @@ class TestBaseParser(unittest.TestCase):
         self.conf = SafeConfigParser()
         self.sec1 = 'tunnel:test'
         self.conf.add_section(self.sec1)
-        self.conf.set(self.sec1, 'type', 'base')
+        self.conf.set(self.sec1, 'tunnel_type', 'base')
         self.conf.set(self.sec1, 'cmd', self.executable)
         self.conf.set(self.sec1, 'executable', self.executable)
 
@@ -196,7 +196,7 @@ class TestTunnelConf(TestStartingSingleTunnel):
         conf = SafeConfigParser()
         sec1 = 'tunnel:test'
         conf.add_section(sec1)
-        conf.set(sec1, 'type', 'base')
+        conf.set(sec1, 'tunnel_type', 'base')
         conf.set(sec1, 'cmd', self.executable)
         conf.set(sec1, 'executable', self.executable)
 
@@ -244,7 +244,7 @@ class TestLongRunConf(TestLongRun):
         conf = SafeConfigParser()
         sec1 = 'tunnel:test'
         conf.add_section(sec1)
-        conf.set(sec1, 'type', 'base')
+        conf.set(sec1, 'tunnel_type', 'base')
         conf.set(sec1, 'cmd', self.executable)
         conf.set(sec1, 'executable', self.executable)
 

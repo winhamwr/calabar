@@ -2,16 +2,12 @@ import subprocess
 import os
 import signal
 
-class ExecutableNotFound(Exception):
-    """
-    The given tunnel executable wasn't found or isn't executable.
-    """
-    pass
+from calabar.tunnels import TUN_TYPE_STR, ExecutableNotFound, TunnelTypeDoesNotMatch
 
 class TunnelBase(object):
-    TYPE = 'base'
+    TUNNEL_TYPE = 'base'
 
-    def __init__(self, cmd, executable, name='default'):
+    def __init__(self, cmd, executable, name='default', tunnel_type=None):
         """
         Create a tunnel that's opened using the given command and executable.
 
@@ -19,11 +15,17 @@ class TunnelBase(object):
         display name that the tunnel process should use eg ``calabar_vpnc``
         ``executable`` is a path to the executable file that will be used to
         create the tunnel eg. ``/usr/sbin/vpnc``
+        ``name`` will be this tunnels string identifier.
+        ``tun_type`` if given, must match :attr:`TunnelBase.TYPE` or a
+        :exc:`TunnelTypeDoesNotMatch` exception will be raised.
         """
         self.cmd = cmd
         self.executable = executable
         self.proc = None
         self.name = name
+        if tunnel_type and tunnel_type != TunnelBase.TUNNEL_TYPE:
+            raise TunnelTypeDoesNotMatch(
+                'Tunnel type <%s> does not match expected <%s>' % (tunnel_type, TunnelBase.TUNNEL_TYPE))
 
     def open(self):
         """
@@ -88,7 +90,7 @@ class TunnelBase(object):
         :member:`__init__`
         """
         tun_conf_d = {}
-        tun_conf_d['type'] = TunnelBase.TYPE
+        tun_conf_d[TUN_TYPE_STR] = TunnelBase.TUNNEL_TYPE
         cmd = config.get(section_name, 'cmd')
         tun_conf_d['cmd'] = cmd.split()
         tun_conf_d['executable'] = config.get(section_name, 'executable')

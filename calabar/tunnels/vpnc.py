@@ -1,19 +1,29 @@
-from calabar.tunnels.base import TunnelBase
+from calabar.tunnels import TUN_TYPE_STR
+from calabar.tunnels.base import TunnelBase, TunnelTypeDoesNotMatch
 
 class VpncTunnel(TunnelBase):
-    TYPE = 'vpnc'
+    TUNNEL_TYPE = 'vpnc'
     PROC_NAME = 'calabar_vpnc'
     EXEC = '/usr/sbin/vpnc'
 
-    def __init__(self, conf_file, executable=None, *args, **kwargs):
+    def __init__(self, conf_file, executable=None, ips=None, tunnel_type=None,
+                 *args, **kwargs):
         """
         Create a new vpnc tunnel using the given vpn configuration file.
+
+        ``conf_file`` is the path to the ``vpnc`` configuration file that will be
+        used to make the connection
+        ``executable`` is the path to the ``vpnc`` command
         """
         self.conf_file = conf_file
 
         cmd = self._build_cmd(self.conf_file)
         if not executable:
             executable = VpncTunnel.EXEC
+
+        if tunnel_type and tunnel_type != VpncTunnel.TUNNEL_TYPE:
+            raise TunnelTypeDoesNotMatch(
+                'Tunnel type <%s> does not match expected <%s>' % (tunnel_type, TunnelBase.TUNNEL_TYPE))
 
         super(VpncTunnel, self).__init__(cmd, executable, *args, **kwargs)
 
@@ -45,8 +55,8 @@ class VpncTunnel(TunnelBase):
         :member:`__init__`
         """
         tun_conf_d = {} # Tunnel configuration directory
-        tun_conf_d['type'] = VpncTunnel.TYPE
-        tun_conf_d['conf'] = config.get(section_name, 'conf')
+        tun_conf_d[TUN_TYPE_STR] = VpncTunnel.TUNNEL_TYPE
+        tun_conf_d['conf_file'] = config.get(section_name, 'conf_file')
 
         # Optional parts
         tun_conf_d['ips'] = []
@@ -55,7 +65,7 @@ class VpncTunnel(TunnelBase):
 
         # Get the binary/executable for VPNC
         tun_conf_d['executable'] = None
-        if config.has_option(VpncTunnel.TYPE, 'bin'):
-            tun_conf_d['executable'] = config.get(VpncTunnel.TYPE, 'bin')
+        if config.has_option(VpncTunnel.TUNNEL_TYPE, 'bin'):
+            tun_conf_d['executable'] = config.get(VpncTunnel.TUNNEL_TYPE, 'bin')
 
         return tun_conf_d
