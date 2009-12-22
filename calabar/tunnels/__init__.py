@@ -46,10 +46,10 @@ class TunnelManager():
         tun_confs_d = get_tunnels(config)
 
         for name, tun_conf_d in tun_confs_d.items():
-            t = self.load_tunnel(name, tun_conf_d)
+            t = self._load_tunnel(name, tun_conf_d)
             self.tunnels.append(t)
 
-    def load_tunnel(self, tunnel_name, tun_conf_d):
+    def _load_tunnel(self, tunnel_name, tun_conf_d):
         """
         Create and return a tunnel instance from a ``tun_conf_d`` dictionary.
 
@@ -110,7 +110,9 @@ class TunnelManager():
         pid, exit_status = os.wait()
 
         for t in self.tunnels:
-            if t.proc and t.proc.pid == pid:
+            # For all of the "closing" tunnels, if they've stopped running, handle the close
+            if t.closing and not t.is_running():
+                # Assume the same exit_status
                 t.handle_closed(exit_status)
 
 TUNNEL_PREFIX = 'tunnel:'

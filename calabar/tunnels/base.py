@@ -26,28 +26,28 @@ class TunnelBase(object):
         if tunnel_type and tunnel_type != TunnelBase.TUNNEL_TYPE:
             raise TunnelTypeDoesNotMatch(
                 'Tunnel type <%s> does not match expected <%s>' % (tunnel_type, TunnelBase.TUNNEL_TYPE))
+        self.closing = False # Are we currently trying to close this tunnel
+        self.opening = False # Not currently trying to open this tunnel
 
     def open(self):
         """
-        Open the tunnel. Returns True on successful opening.
+        Open the tunnel.
         """
         if not which(self.executable):
             raise ExecutableNotFound("The executable <%s> in invalid. Not found or not marked executable." % repr(self.executable))
+
+        self.closing = False
+        self.opening = True
         self.proc = self._open(self.cmd, self.executable)
-        if self.proc:
-            return True
-        return False
+
+        return self.proc
 
     def _open(self, cmd, executable):
         """
         Perform the actual process launch using the command and executable
         configured for this tunnel.
         """
-        try:
-            proc = subprocess.Popen(cmd, executable=executable)
-        except OSError:
-            print "OSError running tunnel"
-            proc = None
+        proc = subprocess.Popen(cmd, executable=executable)
 
         return proc
 
@@ -63,6 +63,8 @@ class TunnelBase(object):
 
         If ``force`` is given as True, close using :mod:signal.SIGKILL to force a close.
         """
+        self.closing = True
+        self.opening = False
         if self.is_running():
             sig = signal.SIGTERM
             if force:
@@ -77,6 +79,8 @@ class TunnelBase(object):
         Handle the tunnel process having closed externally. There was probably
         some sort of error.
         """
+        self.closing = False
+        self.opening = False
         self.proc = None
 
     @staticmethod

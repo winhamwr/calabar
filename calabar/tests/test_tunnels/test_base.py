@@ -2,8 +2,9 @@ import unittest
 import subprocess
 import os
 import signal
+import time
 
-from calabar.tunnels.base import TunnelBase, ExecutableNotFound
+from calabar.tunnels.base import TunnelBase, ExecutableNotFound, TunnelTypeDoesNotMatch
 
 class TestInvalidTunnel(unittest.TestCase):
     def setUp(self):
@@ -43,6 +44,14 @@ class TestInvalidTunnel(unittest.TestCase):
         self.t.close(force=True)
         self.assertFalse(self.t.is_running())
 
+
+class TestInvalidConf(unittest.TestCase):
+
+    def test_invalid_type(self):
+        self.assertRaises(TunnelTypeDoesNotMatch, TunnelBase,
+                          *[None, None], **{'tunnel_type':'invalid'})
+
+
 class TestValidTunnel(unittest.TestCase):
     def setUp(self):
         self.executable = 'cal_run_forever'
@@ -53,21 +62,20 @@ class TestValidTunnel(unittest.TestCase):
     def tearDown(self):
         subprocess.call(['killall', self.executable])
 
-    def test_open_success(self):
+    def test_open_proc(self):
         """
-        Test that ``TunnelBase.open`` returns ``True`` on a successful process
-        open.
-
-        Uses the ``top`` unix program.
+        Test that ``TunnelBase.open`` returns the Popen object on a successful process
+        open and also sets the proc attribute.
         """
-        success = self.t.open()
-        self.assertTrue(success, "%s should have successfully opened" % self.executable)
+        proc = self.t.open()
+        self.assertNotEqual(proc, None)
+        self.assertEqual(proc, self.t.proc)
 
     def test_isrunning_success(self):
         """
         Test that TunnelBase.is_running correctly detects a currently running process.
         """
-        success = self.t.open()
+        proc = self.t.open()
         is_running = self.t.is_running()
 
         self.assertTrue(is_running, '%s should still be running' % self.executable)
@@ -77,7 +85,7 @@ class TestValidTunnel(unittest.TestCase):
         Test that TunnelBase.is_running correctly detects a process that has been
         closed.
         """
-        success = self.t.open()
+        proc = self.t.open()
         os.kill(self.t.proc.pid, signal.SIGKILL)
         self.t.proc.wait() # Wait for the process to close
 
@@ -90,7 +98,7 @@ class TestValidTunnel(unittest.TestCase):
         Test that calling ``TunnelBase.close`` on a running process actually
         closes it.
         """
-        success = self.t.open()
+        proc = self.t.open()
         self.t.close()
 
         is_running = self.t.is_running()
@@ -101,7 +109,7 @@ class TestValidTunnel(unittest.TestCase):
         Test that calling ``TunnelBase.close`` with force=True on a running
         process actually closes it.
         """
-        success = self.t.open()
+        proc = self.t.open()
         self.t.close(force=True)
 
         is_running = self.t.is_running()
@@ -112,7 +120,7 @@ class TestValidTunnel(unittest.TestCase):
         Test that calling ``TunnelBase.close`` on a process that is already
         closed doesn't throw any errors.
         """
-        success = self.t.open()
+        proc = self.t.open()
         os.kill(self.t.proc.pid, signal.SIGKILL)
         self.t.proc.wait()
 

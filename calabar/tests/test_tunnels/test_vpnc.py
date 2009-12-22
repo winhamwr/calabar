@@ -1,6 +1,7 @@
 import unittest
 
 from calabar.tunnels.vpnc import VpncTunnel
+from calabar.tunnels import TunnelTypeDoesNotMatch
 
 class TestDefaultTunnelConf(unittest.TestCase):
     def setUp(self):
@@ -19,3 +20,8 @@ class TestDefaultTunnelConf(unittest.TestCase):
     def test_executable(self):
         self.assertEqual(self.t.executable, '/usr/sbin/vpnc')
 
+class TestInvalidConf(unittest.TestCase):
+
+    def test_invalid_type(self):
+        self.assertRaises(TunnelTypeDoesNotMatch, VpncTunnel,
+                          *[None], **{'tunnel_type':'invalid'})

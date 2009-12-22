@@ -6,8 +6,8 @@ import time
 import signal
 from ConfigParser import SafeConfigParser
 
-from calabar.tunnels import TunnelManager
-from calabar.tunnels.base import TunnelBase
+from calabar.tunnels import TunnelManager, TunnelsAlreadyLoadedException, ExecutableNotFound
+from calabar.tunnels.base import TunnelBase, which
 
 PROC_NOT_RUNNING = [
     psi.process.PROC_STATUS_DEAD,
@@ -25,8 +25,15 @@ def is_really_running(tunnel):
 
     return False
 
+class TearDownRunForever(unittest.TestCase):
+    def tearDown(self):
+        signal.signal(signal.SIGCHLD, signal.SIG_IGN)
+        try:
+            subprocess.call("ps auxww | grep %s | awk '{print $2}' | xargs kill" % self.executable, shell=True)
+        except OSError:
+            pass
 
-class TestStartingSingleTunnel(unittest.TestCase):
+class TestStartingSingleTunnel(TearDownRunForever):
 
     def setUp(self):
         self.executable = 'cal_run_forever'
@@ -36,13 +43,6 @@ class TestStartingSingleTunnel(unittest.TestCase):
 
         self.tm = TunnelManager()
         self.tm.tunnels = [self.t]
-
-    def tearDown(self):
-        signal.signal(signal.SIGCHLD, signal.SIG_IGN)
-        try:
-            subprocess.call("ps auxww | grep %s | awk '{print $2}' | xargs kill" % self.executable, shell=True)
-        except OSError:
-            pass
 
     def test_start_success(self):
         self.tm.start_tunnels()
@@ -71,18 +71,6 @@ class TestStartingSingleTunnel(unittest.TestCase):
         self.tm.start_tunnels()
 
         self.t.close(wait=False)
-
-
-    def test_continue_after_kill(self):
-        self.tm.start_tunnels()
-
-        self.t.close(wait=False)
-
-        self.tm.continue_tunnels()
-        time.sleep(.5)
-        self.tm.continue_tunnels()
-
-        self.assertTrue(is_really_running(self.t))
 
 
 class TestVpncParserOpts(unittest.TestCase):
@@ -140,7 +128,7 @@ class TestVpncParser(unittest.TestCase):
         self.assertEqual(t.executable, '/path/to/vpnc.bin')
 
 
-class TestBaseParser(unittest.TestCase):
+class TestBaseParser(TearDownRunForever):
 
     def setUp(self):
         self.executable = 'cal_run_forever'
@@ -186,8 +174,8 @@ class TestBaseParser(unittest.TestCase):
 
 class TestTunnelConf(TestStartingSingleTunnel):
     """
-    Run the same tests as TestStartingSingleTunnel, only do them with a tunnel
-    loaded from the configuration file.
+    Run the same tests as TestStartingSingleTunnel with a tunnel
+    loaded from the configuration file. Also adds a few extra tests.
     """
 
     def setUp(self):
@@ -206,8 +194,47 @@ class TestTunnelConf(TestStartingSingleTunnel):
 
         self.t = self.tm.tunnels[0]
 
+    def test_already_loaded(self):
+        conf = SafeConfigParser()
+        self.assertRaises(TunnelsAlreadyLoadedException, self.tm.load_tunnels, *[conf])
 
-class TestLongRun(unittest.TestCase):
+class TestInvalidTunnelConfs(unittest.TestCase):
+
+    def test_invalid_tunnel_type_conf(self):
+        conf = SafeConfigParser()
+        sec1 = 'tunnel:test'
+        conf.add_section(sec1)
+        conf.set(sec1, 'tunnel_type', 'INVALID')
+
+        tm = TunnelManager()
+        self.assertRaises(NotImplementedError, tm.load_tunnels, *[conf])
+
+    def test_invalid_load_tunnel_type(self):
+        tun_conf_d = {'tunnel_type': 'INVALID'}
+
+        tm = TunnelManager()
+        self.assertRaises(NotImplementedError, tm._load_tunnel, *['test', tun_conf_d])
+
+
+class TestInvalidTunnels(unittest.TestCase):
+
+    def setUp(self):
+        self.tunnel = TunnelBase(['ls'], 'DOESNOTEXIST')
+
+        self.tm = TunnelManager()
+        self.tm.tunnels.append(self.tunnel)
+
+    def test_start_bad_exec(self):
+        self.tm.start_tunnels()
+        # No error was raised
+        self.assertFalse(self.tunnel.is_running())
+
+    def test_continue_bad_exec(self):
+        self.tm.continue_tunnels()
+        # No error was raised
+        self.assertFalse(self.tunnel.is_running())
+
+class TestLongRun(TearDownRunForever):
 
     def setUp(self):
         self.executable = 'cal_run_forever'
@@ -232,23 +259,42 @@ class TestLongRun(unittest.TestCase):
 
         self.assertTrue(is_really_running(self.t))
 
-class TestLongRunConf(TestLongRun):
+    def test_close_running_externally_handled(self):
+        self.tm.start_tunnels()
+
+        proc = self.t.proc
+        os.kill(proc.pid, signal.SIGTERM)
+        # Wait for the process to close
+        _wait_for_condition(lambda : not self.t.is_running(), "Process not closed")
+
+        self.assertFalse(self.t.is_running())
+
+    def test_continue_after_kill(self):
+        self.tm.start_tunnels()
+
+        self.t.close(wait=False)
+
+        _wait_for_condition(lambda: not is_really_running(self.t), "Process not stopped")
+        self.tm.continue_tunnels()
+        _wait_for_condition(lambda: is_really_running(self.t), "Process not started")
+
+        self.assertTrue(is_really_running(self.t))
+
+def _wait_for_condition(cond, msg):
     """
-    Run the same tests as TestLongRun, only do them with a tunnel
-    loaded from the configuration file.
+    Wait up to 1 second in .1 second increments for the callable to return true,
+    otherwise throw an error.
     """
+    for x in range(11):
+        if x == 10:
+            self.fail(msg)
+        if not cond():
+            time.sleep(.1)
+        else:
+            print "time: %d" % (x*0.1)
+            break
 
-    def setUp(self):
-        self.executable = 'cal_run_forever'
+def test_which_fs():
+    which_path = which('/bin/ls')
 
-        conf = SafeConfigParser()
-        sec1 = 'tunnel:test'
-        conf.add_section(sec1)
-        conf.set(sec1, 'tunnel_type', 'base')
-        conf.set(sec1, 'cmd', self.executable)
-        conf.set(sec1, 'executable', self.executable)
-
-        self.tm = TunnelManager()
-        self.tm.load_tunnels(conf)
-
-        self.t = self.tm.tunnels[0]
+    assert which_path == '/bin/ls'
