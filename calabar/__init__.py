@@ -1,6 +1,6 @@
 """VPN and SSH tunnel manager"""
 
-VERSION = (0, 0, 3, 'dev')
+VERSION = (0, 1, 0, 'dev')
 
 __version__ = ".".join(map(str, VERSION[:-1]))
 __release__ = ".".join(map(str, VERSION))
