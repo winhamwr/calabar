@@ -93,7 +93,9 @@ class TunnelManager():
 
 TUNNEL_PREFIX = 'tunnel:'
 
-def get_tunnels(conf):
+TUNNELS = [VpncTunnel, TunnelBase]
+
+def get_tunnels(config):
     """
     Return a dictionary of dictionaries containg tunnel configurations based on the
     given SafeConfigParser instance.
@@ -115,50 +117,28 @@ def get_tunnels(conf):
                 }
         }
     """
-    tun_confs = {}
+    tun_confs_d = {}
 
-    for section in conf.sections():
+    for section in config.sections():
         if section.startswith(TUNNEL_PREFIX):
-            tun_type = conf.get(section, 'type')
-            if tun_type == 'vpnc':
-                tun_conf = _get_vpnc_conf(conf, section)
-            elif tun_type == 'ssh':
-                tun_conf = _get_ssh_conf(conf, section)
-            elif tun_type == 'base':
-                tun_conf = _get_base_conf(conf, section)
-            else:
-                raise NotImplementedError("The tunnel type [%s] isn't supported" % tun_type)
+            tun_conf_d = parse_tunnel(config, section)
 
             tun_name = section[len(TUNNEL_PREFIX):]
-            tun_confs[tun_name] = tun_conf
+            tun_confs_d[tun_name] = tun_conf_d
 
-    return tun_confs
+    return tun_confs_d
 
-def _get_vpnc_conf(conf, section_name):
-    tun_conf = {}
-    tun_conf['type'] = 'vpnc'
-    tun_conf['conf'] = conf.get(section_name, 'conf')
+def parse_tunnel(config, section):
+    """
+    Parse the given ``section`` in the given ``config``
+    :mod:`ConfigParser.ConfigParser` object to generate a tunnel configuration
+    dictionary using all configured tunnel types and their configuration
+    parsers.
+    """
+    tun_type = config.get(section, 'type')
+    for tunnel in TUNNELS:
+        if tun_type == tunnel.TYPE:
+            tun_conf_d = tunnel.parse_configuration(config, section)
+            return tun_conf_d
 
-    # Optional parts
-    tun_conf['ips'] = []
-    if conf.has_option(section_name, 'ips'):
-        tun_conf['ips'] = conf.get(section_name, 'ips')
-
-    # Get the binary/executable for VPNC
-    tun_conf['executable'] = None
-    if conf.has_option('vpnc', 'bin'):
-        tun_conf['executable'] = conf.get('vpnc', 'bin')
-
-    return tun_conf
-
-def _get_base_conf(conf, section_name):
-    tun_conf = {}
-    tun_conf['type'] = 'base'
-    cmd = conf.get(section_name, 'cmd')
-    tun_conf['cmd'] = cmd.split()
-    tun_conf['executable'] = conf.get(section_name, 'executable')
-
-    return tun_conf
-
-def _get_ssh_conf(conf, section_name):
-    raise NotImplementedError('SSH config not yet implemented')
+    raise NotImplementedError("The tunnel type [%s] isn't supported" % tun_type)

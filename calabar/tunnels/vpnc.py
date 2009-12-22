@@ -1,6 +1,7 @@
 from calabar.tunnels.base import TunnelBase
 
 class VpncTunnel(TunnelBase):
+    TYPE = 'vpnc'
     PROC_NAME = 'calabar_vpnc'
     EXEC = '/usr/sbin/vpnc'
 
@@ -32,3 +33,29 @@ class VpncTunnel(TunnelBase):
         cmd += stay_in_foreground + random_port + non_interactive
 
         return cmd
+
+    @staticmethod
+    def parse_configuration(config, section_name):
+        """
+        Parse out the required tunnel information from the given
+        :mod:ConfigParser.ConfigParser instance, with this tunnel being
+        represented by the tunnel at ``section_name``.
+
+        Returns a dictionary with options corresponding to those taken by
+        :member:`__init__`
+        """
+        tun_conf_d = {} # Tunnel configuration directory
+        tun_conf_d['type'] = VpncTunnel.TYPE
+        tun_conf_d['conf'] = config.get(section_name, 'conf')
+
+        # Optional parts
+        tun_conf_d['ips'] = []
+        if config.has_option(section_name, 'ips'):
+            tun_conf_d['ips'] = config.get(section_name, 'ips')
+
+        # Get the binary/executable for VPNC
+        tun_conf_d['executable'] = None
+        if config.has_option(VpncTunnel.TYPE, 'bin'):
+            tun_conf_d['executable'] = config.get(VpncTunnel.TYPE, 'bin')
+
+        return tun_conf_d

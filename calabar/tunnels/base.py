@@ -9,6 +9,8 @@ class ExecutableNotFound(Exception):
     pass
 
 class TunnelBase(object):
+    TYPE = 'base'
+
     def __init__(self, cmd, executable, name='default'):
         """
         Create a tunnel that's opened using the given command and executable.
@@ -74,6 +76,24 @@ class TunnelBase(object):
         some sort of error.
         """
         self.proc = None
+
+    @staticmethod
+    def parse_configuration(config, section_name):
+        """
+        Parse out the required tunnel information from the given
+        :mod:ConfigParser.ConfigParser instance, with this tunnel being
+        represented by the tunnel at ``section_name``.
+
+        Returns a dictionary with options corresponding to those taken by
+        :member:`__init__`
+        """
+        tun_conf_d = {}
+        tun_conf_d['type'] = TunnelBase.TYPE
+        cmd = config.get(section_name, 'cmd')
+        tun_conf_d['cmd'] = cmd.split()
+        tun_conf_d['executable'] = config.get(section_name, 'executable')
+
+        return tun_conf_d
 
 
 def which(program):
