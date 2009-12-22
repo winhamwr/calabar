@@ -6,9 +6,10 @@ This module encapsulates various tunnel processes and their management.
 
 import signal
 import os
+import sys
 
 from calabar.tunnels.vpnc import VpncTunnel
-from calabar.tunnels.base import TunnelBase
+from calabar.tunnels.base import TunnelBase, ExecutableNotFound
 
 class TunnelsAlreadyLoadedException(Exception):
     """Once tunnels are loaded the first time, other methods must be used to
@@ -48,7 +49,10 @@ class TunnelManager():
         Start all of the configured tunnels and register to keep them running.
         """
         for t in self.tunnels:
-            t.open()
+            try:
+                t.open()
+            except ExecutableNotFound, e:
+                print >> sys.stderr, e
 
     def continue_tunnels(self):
         """
@@ -58,7 +62,10 @@ class TunnelManager():
             if not t.is_running():
                 print "TUNNEL [%s] EXITED" % t.name
                 print "RESTARTING"
-                t.open()
+                try:
+                    t.open()
+                except ExecutableNotFound, e:
+                    print >> sys.stderr, e
             else:
                 print "[%s]:%s running" % (t.name, t.proc.pid)
 

@@ -2,6 +2,12 @@ import subprocess
 import os
 import signal
 
+class ExecutableNotFound(Exception):
+    """
+    The given tunnel executable wasn't found or isn't executable.
+    """
+    pass
+
 class TunnelBase(object):
     def __init__(self, cmd, executable, name='default'):
         """
@@ -21,6 +27,8 @@ class TunnelBase(object):
         """
         Open the tunnel. Returns True on successful opening.
         """
+        if not which(self.executable):
+            raise ExecutableNotFound("The executable <%s> in invalid. Not found or not marked executable." % repr(self.executable))
         self.proc = self._open(self.cmd, self.executable)
         if self.proc:
             return True
@@ -34,6 +42,7 @@ class TunnelBase(object):
         try:
             proc = subprocess.Popen(cmd, executable=executable)
         except OSError:
+            print "OSError running tunnel"
             proc = None
 
         return proc
@@ -65,3 +74,26 @@ class TunnelBase(object):
         some sort of error.
         """
         self.proc = None
+
+
+def which(program):
+    """
+    Determine where the given executable exists on the path (if it exists). Mimics
+    the behavior of the gnu ``which`` command.
+
+    Returns ``None`` if the executable is not found.
+
+    Taken from: http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python
+    """
+    def is_exe(fpath):
+        return os.path.exists(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file

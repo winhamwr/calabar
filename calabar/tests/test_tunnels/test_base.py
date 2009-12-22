@@ -3,7 +3,7 @@ import subprocess
 import os
 import signal
 
-from calabar.tunnels.base import TunnelBase
+from calabar.tunnels.base import TunnelBase, ExecutableNotFound
 
 class TestInvalidTunnel(unittest.TestCase):
     def setUp(self):
@@ -19,15 +19,15 @@ class TestInvalidTunnel(unittest.TestCase):
 
         Uses the ``ls`` unix program since it will return right away.
         """
-        success = self.t.open()
-        self.assertFalse(success, "ls shouldn't be running")
+        self.assertRaises(ExecutableNotFound, self.t.open)
 
     def test_isrunning_failure(self):
         """
         Test that TunnelBase.is_running correctly detects a process that failed
         to run.
         """
-        success = self.t.open()
+        self.assertRaises(ExecutableNotFound, self.t.open)
+
         is_running = self.t.is_running()
 
         self.assertFalse(is_running, 'ls should not be running')
@@ -37,7 +37,7 @@ class TestInvalidTunnel(unittest.TestCase):
         Test that calling ``TunnelBase.close`` on a process that failed to start
         doesn't throw any errors.
         """
-        success = self.t.open()
+        self.assertRaises(ExecutableNotFound, self.t.open)
 
         self.t.close()
         self.t.close(force=True)

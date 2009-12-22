@@ -206,3 +206,49 @@ class TestTunnelConf(TestStartingSingleTunnel):
 
         self.t = self.tm.tunnels[0]
 
+
+class TestLongRun(unittest.TestCase):
+
+    def setUp(self):
+        self.executable = 'cal_run_forever'
+        self.cmd = [self.executable]
+
+        self.t = TunnelBase(self.cmd, self.executable)
+
+        self.tm = TunnelManager()
+        self.tm.tunnels = [self.t]
+
+    def tearDown(self):
+        signal.signal(signal.SIGCHLD, signal.SIG_IGN)
+        try:
+            subprocess.call("ps auxww | grep %s | awk '{print $2}' | xargs kill" % self.executable, shell=True)
+        except OSError:
+            pass
+
+    def test_single_run(self):
+        self.tm.start_tunnels()
+        self.tm.continue_tunnels()
+        time.sleep(1)
+
+        self.assertTrue(is_really_running(self.t))
+
+class TestLongRunConf(TestLongRun):
+    """
+    Run the same tests as TestLongRun, only do them with a tunnel
+    loaded from the configuration file.
+    """
+
+    def setUp(self):
+        self.executable = 'cal_run_forever'
+
+        conf = SafeConfigParser()
+        sec1 = 'tunnel:test'
+        conf.add_section(sec1)
+        conf.set(sec1, 'type', 'base')
+        conf.set(sec1, 'cmd', self.executable)
+        conf.set(sec1, 'executable', self.executable)
+
+        self.tm = TunnelManager()
+        self.tm.load_tunnels(conf)
+
+        self.t = self.tm.tunnels[0]
