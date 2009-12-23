@@ -59,6 +59,31 @@
 <em class="property">exception </em><tt class="descclassname">calabar.tunnels.</tt><tt class="descname">ExecutableNotFound</tt><a class="headerlink" href="#calabar.tunnels.ExecutableNotFound" title="Permalink to this definition">¶</a></dt>
 <dd>The given tunnel executable wasn&#8217;t found or isn&#8217;t executable.</dd></dl>
 
+<dl class="class">
+<dt id="calabar.tunnels.TunnelManager">
+<em class="property">class </em><tt class="descclassname">calabar.tunnels.</tt><tt class="descname">TunnelManager</tt><a class="headerlink" href="#calabar.tunnels.TunnelManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for working with multiple <a title="calabar.tunnels.base.TunnelBase" class="reference external" href="calabar.tunnels.base.html#calabar.tunnels.base.TunnelBase"><tt class="xref docutils literal"><span class="pre">calabar.tunnels.base.TunnelBase</span></tt></a>
+tunnels.</p>
+<p>Creating this tunnels registers it for SIG_CHLD signals, so only ONE
+TunnelManager can exist at a time for purposes of keeping the other tunnels
+running.</p>
+<dl class="method">
+<dt id="calabar.tunnels.TunnelManager.continue_tunnels">
+<tt class="descname">continue_tunnels</tt><big>(</big><big>)</big><a class="headerlink" href="#calabar.tunnels.TunnelManager.continue_tunnels" title="Permalink to this definition">¶</a></dt>
+<dd>Ensure that all of the tunnels are still running.</dd></dl>
+
+<dl class="method">
+<dt id="calabar.tunnels.TunnelManager.load_tunnels">
+<tt class="descname">load_tunnels</tt><big>(</big><em>config</em><big>)</big><a class="headerlink" href="#calabar.tunnels.TunnelManager.load_tunnels" title="Permalink to this definition">¶</a></dt>
+<dd>Load config information to create all required tunnels.</dd></dl>
+
+<dl class="method">
+<dt id="calabar.tunnels.TunnelManager.start_tunnels">
+<tt class="descname">start_tunnels</tt><big>(</big><big>)</big><a class="headerlink" href="#calabar.tunnels.TunnelManager.start_tunnels" title="Permalink to this definition">¶</a></dt>
+<dd>Start all of the configured tunnels and register to keep them running.</dd></dl>
+
+</dd></dl>
+
 <dl class="exception">
 <dt id="calabar.tunnels.TunnelTypeDoesNotMatch">
 <em class="property">exception </em><tt class="descclassname">calabar.tunnels.</tt><tt class="descname">TunnelTypeDoesNotMatch</tt><a class="headerlink" href="#calabar.tunnels.TunnelTypeDoesNotMatch" title="Permalink to this definition">¶</a></dt>

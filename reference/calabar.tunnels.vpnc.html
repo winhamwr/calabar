@@ -48,6 +48,34 @@
             
   <div class="section" id="module-calabar.tunnels.vpnc">
 <h1>Tunnel: VPNC - calabar.tunnels.vpnc<a class="headerlink" href="#module-calabar.tunnels.vpnc" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="calabar.tunnels.vpnc.VpncTunnel">
+<em class="property">class </em><tt class="descclassname">calabar.tunnels.vpnc.</tt><tt class="descname">VpncTunnel</tt><big>(</big><em>conf_file</em>, <em>executable=None</em>, <em>ips=None</em>, <em>tunnel_type=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#calabar.tunnels.vpnc.VpncTunnel" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference external" href="http://www.unix-ag.uni-kl.de/~massar/vpnc/">vpnc</a> tunnel.</p>
+<p>Create a new vpnc tunnel using the given vpn configuration file.</p>
+<p><tt class="docutils literal"><span class="pre">conf_file</span></tt> is the path to the <tt class="docutils literal"><span class="pre">vpnc</span></tt> configuration file that will be
+used to make the connection
+<tt class="docutils literal"><span class="pre">executable</span></tt> is the path to the <tt class="docutils literal"><span class="pre">vpnc</span></tt> command</p>
+<dl class="method">
+<dt id="calabar.tunnels.vpnc.VpncTunnel.get_split_tunnel_script_fp">
+<tt class="descname">get_split_tunnel_script_fp</tt><big>(</big><em>ips=None</em><big>)</big><a class="headerlink" href="#calabar.tunnels.vpnc.VpncTunnel.get_split_tunnel_script_fp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the path to the split-tunneling configuration script.</p>
+<p><tt class="docutils literal"><span class="pre">ips</span></tt> is an array of IP addresses that will be the target of
+split tunneling</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="calabar.tunnels.vpnc.VpncTunnel.parse_configuration">
+<em class="property">static </em><tt class="descname">parse_configuration</tt><big>(</big><em>config</em>, <em>section_name</em><big>)</big><a class="headerlink" href="#calabar.tunnels.vpnc.VpncTunnel.parse_configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse out the required tunnel information from the given
+:mod:ConfigParser.ConfigParser instance, with this tunnel being
+represented by the tunnel at <tt class="docutils literal"><span class="pre">section_name</span></tt>.</p>
+<p>Returns a dictionary with options corresponding to those taken by
+<a href="#id1"><span class="problematic" id="id2">:member:`__init__`</span></a></p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
