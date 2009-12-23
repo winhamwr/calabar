@@ -5,20 +5,27 @@ import signal
 from calabar.tunnels import TUN_TYPE_STR, ExecutableNotFound, TunnelTypeDoesNotMatch, is_really_running
 
 class TunnelBase(object):
+    """The base Tunnel clase for encapsulating a specific type of tunnel.
+
+    Create a tunnel that's opened using the given command and executable.
+
+    ``cmd`` is a list of command arguments with the first argument being the
+    display name that the tunnel process should use eg ``calabar_vpnc``
+    ``executable`` is a path to the executable file that will be used to
+    create the tunnel eg. ``/usr/sbin/vpnc``
+    ``name`` will be this tunnels string identifier.
+    ``tun_type`` if given, must match :attr:`TunnelBase.TYPE` or a
+    :exc:`TunnelTypeDoesNotMatch` exception will be raised.
+
+    To implement other tunnels, you can extend this class (as :class:`calabar.tunnels.vpnc.VpncTunnel`
+    does) or if the tunnel process is simple enough to only need command line
+    options, you can simply pass in the appropriate ``cmd`` array and
+    path to the required ``executable``.
+    """
+
     TUNNEL_TYPE = 'base'
 
     def __init__(self, cmd, executable, name='default', tunnel_type=None):
-        """
-        Create a tunnel that's opened using the given command and executable.
-
-        ``cmd`` is a list of command arguments with the first argument being the
-        display name that the tunnel process should use eg ``calabar_vpnc``
-        ``executable`` is a path to the executable file that will be used to
-        create the tunnel eg. ``/usr/sbin/vpnc``
-        ``name`` will be this tunnels string identifier.
-        ``tun_type`` if given, must match :attr:`TunnelBase.TYPE` or a
-        :exc:`TunnelTypeDoesNotMatch` exception will be raised.
-        """
         self.cmd = cmd
         self.executable = executable
         self.proc = None

@@ -21,6 +21,11 @@ sys.path.append(os.path.abspath('../calabar'))
 
 import calabar
 
+# -- Extra opts ------------
+
+#Show the __init__ methods in docs
+autoclass_content = "both"
+
 # -- General configuration -----------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be extensions

@@ -49,10 +49,15 @@ class TunnelTypeDoesNotMatch(Exception):
     pass
 
 class TunnelManager():
+    """
+    A class for working with multiple :class:`calabar.tunnels.base.TunnelBase`
+    tunnels.
+
+    Creating this tunnels registers it for SIG_CHLD signals, so only ONE
+    TunnelManager can exist at a time for purposes of keeping the other tunnels
+    running.
+    """
     def __init__(self):
-        """
-        Create a new ``TunnelManager`` and register for SIG_CHLD signals.
-        """
         self.tunnels = []
         self._register_for_close()
 

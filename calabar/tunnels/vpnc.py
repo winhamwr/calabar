@@ -9,19 +9,23 @@ from calabar.tunnels import TUN_TYPE_STR
 from calabar.tunnels.base import TunnelBase, TunnelTypeDoesNotMatch
 
 class VpncTunnel(TunnelBase):
+    """
+    A `vpnc`_ tunnel.
+
+    Create a new vpnc tunnel using the given vpn configuration file.
+
+    ``conf_file`` is the path to the ``vpnc`` configuration file that will be
+    used to make the connection
+    ``executable`` is the path to the ``vpnc`` command
+
+    .. _`vpnc`: http://www.unix-ag.uni-kl.de/~massar/vpnc/
+    """
     TUNNEL_TYPE = 'vpnc'
     PROC_NAME = 'calabar_vpnc'
     EXEC = '/usr/sbin/vpnc'
 
     def __init__(self, conf_file, executable=None, ips=None, tunnel_type=None,
                  *args, **kwargs):
-        """
-        Create a new vpnc tunnel using the given vpn configuration file.
-
-        ``conf_file`` is the path to the ``vpnc`` configuration file that will be
-        used to make the connection
-        ``executable`` is the path to the ``vpnc`` command
-        """
         self.conf_file = conf_file
         self._tun_script = None # Init the cached version of the s/t script
         self._tun_script_f = None # Init the cached version of the s/t script
