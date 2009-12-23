@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tunnels - calabar.tunnels &mdash; Calabar v0.2.0.dev documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.0.dev',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Calabar v0.2.0.dev documentation" href="../index.html" />
+    <link rel="up" title="Module API Reference" href="index.html" />
+    <link rel="next" title="Tunnel: Base - calabar.tunnels.base" href="calabar.tunnels.base.html" />
+    <link rel="prev" title="Bin: calabard - calabar.bin.calabard" href="calabar.bin.calabard.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="calabar.tunnels.base.html" title="Tunnel: Base - calabar.tunnels.base"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="calabar.bin.calabard.html" title="Bin: calabard - calabar.bin.calabard"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Calabar v0.2.0.dev documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module API Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-calabar.tunnels">
+<h1>Tunnels - calabar.tunnels<a class="headerlink" href="#module-calabar.tunnels" title="Permalink to this headline">¶</a></h1>
+<p>calabar.tunnels</p>
+<p>This module encapsulates various tunnel processes and their management.</p>
+<dl class="exception">
+<dt id="calabar.tunnels.ExecutableNotFound">
+<em class="property">exception </em><tt class="descclassname">calabar.tunnels.</tt><tt class="descname">ExecutableNotFound</tt><a class="headerlink" href="#calabar.tunnels.ExecutableNotFound" title="Permalink to this definition">¶</a></dt>
+<dd>The given tunnel executable wasn&#8217;t found or isn&#8217;t executable.</dd></dl>
+
+<dl class="exception">
+<dt id="calabar.tunnels.TunnelTypeDoesNotMatch">
+<em class="property">exception </em><tt class="descclassname">calabar.tunnels.</tt><tt class="descname">TunnelTypeDoesNotMatch</tt><a class="headerlink" href="#calabar.tunnels.TunnelTypeDoesNotMatch" title="Permalink to this definition">¶</a></dt>
+<dd>The given <tt class="docutils literal"><span class="pre">tun_type</span></tt> doesn&#8217;t match expected Tunnel.</dd></dl>
+
+<dl class="exception">
+<dt id="calabar.tunnels.TunnelsAlreadyLoadedException">
+<em class="property">exception </em><tt class="descclassname">calabar.tunnels.</tt><tt class="descname">TunnelsAlreadyLoadedException</tt><a class="headerlink" href="#calabar.tunnels.TunnelsAlreadyLoadedException" title="Permalink to this definition">¶</a></dt>
+<dd>Once tunnels are loaded the first time, other methods must be used to
+update them</dd></dl>
+
+<dl class="function">
+<dt id="calabar.tunnels.get_tunnels">
+<tt class="descclassname">calabar.tunnels.</tt><tt class="descname">get_tunnels</tt><big>(</big><em>config</em><big>)</big><a class="headerlink" href="#calabar.tunnels.get_tunnels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dictionary of dictionaries containg tunnel configurations based on the
+given SafeConfigParser instance.</p>
+<p>An example return value might be:</p>
+<div class="highlight-python"><pre>{
+    'foo':
+        {
+            'tunnel_type': 'vpnc',
+            'conf_file': '/etc/calabar/foo.conf',
+            'ips': [10.10.254.1]
+        },
+    'bar':
+        {
+            'tunnel_type': 'ssh',
+            'from': 'root@10.10.251.2:386',
+            'to': '127.0.0.1:387
+        }
+}</pre>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="calabar.tunnels.parse_tunnel">
+<tt class="descclassname">calabar.tunnels.</tt><tt class="descname">parse_tunnel</tt><big>(</big><em>config</em>, <em>section</em><big>)</big><a class="headerlink" href="#calabar.tunnels.parse_tunnel" title="Permalink to this definition">¶</a></dt>
+<dd>Parse the given <tt class="docutils literal"><span class="pre">section</span></tt> in the given <tt class="docutils literal"><span class="pre">config</span></tt>
+<tt class="xref docutils literal"><span class="pre">ConfigParser.ConfigParser</span></tt> object to generate a tunnel configuration
+dictionary using all configured tunnel types and their configuration
+parsers.</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="calabar.bin.calabard.html"
+                                  title="previous chapter">Bin: calabard - calabar.bin.calabard</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="calabar.tunnels.base.html"
+                                  title="next chapter">Tunnel: Base - calabar.tunnels.base</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/reference/calabar.tunnels.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="calabar.tunnels.base.html" title="Tunnel: Base - calabar.tunnels.base"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="calabar.bin.calabard.html" title="Bin: calabard - calabar.bin.calabard"
+             >previous</a> |</li>
+        <li><a href="../index.html">Calabar v0.2.0.dev documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module API Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Wes Winham.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.3.
+    </div>
+  </body>
+</html>
