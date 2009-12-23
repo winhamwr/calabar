@@ -24,11 +24,21 @@ their VPN settings and be connected without requiring any downtime or sys admin
 intervention. You also need to manage port forwarding so that tunnels don't
 conflict.
 
+What an Odd Name?
+-----------------
+
+The `Calabar Python`_ is also known as the African Burrowing Python. Since this
+project is all about tunnelling, I figured that was as good a name as any. The
+`City in Nigeria`_ is just an innocent bystander.
+
+.. _`Calabar Python`: http://en.wikipedia.org/wiki/Calabar_Python
+.. _`City in Nigeria`: http://en.wikipedia.org/wiki/Calabar
+
 Installation
 ============
 
 The easiest way to install the current development version of Calabard is via
-``pip``,::
+``pip``::
 
     $ pip install -e git+git://github.com/winhamwr/calabar.git
 
