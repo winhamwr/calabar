@@ -34,7 +34,7 @@ setup(
     packages=find_packages('calabar'),
     scripts=["bin/calabard", "bin/cal_run_forever"],
     zip_safe=False,
-    install_requires=[],
+    install_requires=['psi==0.3b2'],
     extra_requires={},
     cmdclass = {},
     classifiers=[
