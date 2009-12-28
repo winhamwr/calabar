@@ -15,8 +15,6 @@ def find_packages(root):
 
 import calabar
 
-install_requires = ["python-daemon>=1.4.8"]
-
 py_version_info = sys.version_info
 py_major_version = py_version_info[0]
 py_minor_version = py_version_info[1]
@@ -36,11 +34,11 @@ setup(
     packages=find_packages('calabar'),
     scripts=["bin/calabard", "bin/cal_run_forever"],
     zip_safe=False,
-    install_requires=install_requires,
+    install_requires=[],
     extra_requires={},
     cmdclass = {},
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
         "Framework :: Django",
         "Programming Language :: Python",
         "Environment :: No Input/Output (Daemon)",
