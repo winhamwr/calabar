@@ -3,15 +3,13 @@
 import codecs
 import sys
 import os
-from distutils.core import setup
 
-def find_packages(root):
-    # so we don't depend on setuptools; from the Storm ORM setup.py
-    packages = []
-    for directory, subdirectories, files in os.walk(root):
-        if '__init__.py' in files:
-            packages.append(directory.replace(os.sep, '.'))
-    return packages
+try:
+    from setuptools import setup, find_packages, Command
+except ImportError:
+    from ez_setup import use_setuptools
+    use_setuptools()
+    from setuptools import setup, find_packages, Command
 
 import calabar
 
@@ -34,7 +32,7 @@ setup(
     packages=find_packages('calabar'),
     scripts=["bin/calabard", "bin/cal_run_forever"],
     zip_safe=False,
-    install_requires=['psi==0.3b2'],
+    install_requires=['psi==0.3b2', 'python-daemon==1.5.2'],
     extra_requires={},
     cmdclass = {},
     classifiers=[

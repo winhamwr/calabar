@@ -27,7 +27,7 @@ do_stop()
 
 do_start()
 {
-	start-stop-daemon --start --exec $DAEMON --name $NAME --pidfile $PIDFILE --background --make-pidfile --chuid $USER --user $USER > $LOGFILE &> $ERR_LOGFILE
+	start-stop-daemon --start --exec $DAEMON --name $NAME --pidfile $PIDFILE --background --make-pidfile --chuid $USER --user $USER -- --daemon > $LOGFILE &> $ERR_LOGFILE
 }
 
 case "$1" in
