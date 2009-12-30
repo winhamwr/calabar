@@ -77,7 +77,7 @@ class VpncTunnel(TunnelBase):
         return self._tun_script_f
 
     def _gen_script_fname(self, ips):
-        ip_hash = md5("".join(ips).encode('utf-8')).hexdigest()[12]
+        ip_hash = md5("".join(ips).encode('utf-8')).hexdigest()[:12]
         fpath = os.path.join('/tmp/', ip_hash)
 
         return fpath
