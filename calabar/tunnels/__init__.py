@@ -122,6 +122,15 @@ class TunnelManager():
         """
         signal.signal(signal.SIGCHLD, self._handle_child_close)
 
+        # Register for a termination signal so we can clean up children
+        signal.signal(signal.SIGTERM, self._handle_terminate)
+
+    def _handle_terminate(self, signum, frame):
+        for t in self.tunnels:
+            t.close(wait=False)
+
+        exit()
+
     def _handle_child_close(self, signum, frame):
         """
         Handle a closed child.

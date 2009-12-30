@@ -22,7 +22,7 @@ fi
 
 
 . /lib/lsb/init-functions
-CALABARD_OPTS="--logfile $CALABARD_LOG_FILE --daemon"
+CALABARD_OPTS="--logfile $CALABARD_LOG_FILE --pidfile $CALABARD_PID_FILE --daemon"
 
 if [ -n "$2" ]; then
     CALABARD_OPTS="$2 $CALABARD_OPTS"
@@ -57,8 +57,7 @@ fi
 # Normal calabard start
 do_start()
 {
-    if start-stop-daemon --start --quiet --oknodo \
-	    --pidfile $CALABARD_PID_FILE --make-pidfile --exec $CALABARD \
+    if start-stop-daemon --start --quiet --oknodo --exec $CALABARD \
 	    -- $CALABARD_OPTS; then
 	log_end_msg 0
     else
