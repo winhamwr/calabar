@@ -87,7 +87,7 @@ case "$1" in
 
   restart)
 	log_daemon_msg "Restarting calabar tunnel manager" "calabard"
-	start-stop-daemon --stop --quiet --oknodo --retry 30
+	start-stop-daemon --stop --quiet --oknodo --retry 30 \
 		--pidfile $CALABARD_PID_FILE
 	check_dev_null log_end_msg
 	do_start
