@@ -22,7 +22,7 @@ setup(
     packages=find_packages(),
     scripts=["bin/calabard", "bin/cal_run_forever"],
     zip_safe=False,
-    install_requires=['psi >=0.3b2, <0.4', 'python-daemon >=1.5.2, < 2.0'],
+    install_requires=['psi >=0.3b2, <0.4'],
     cmdclass = {},
     classifiers=[
         "Development Status :: 4 - Beta",

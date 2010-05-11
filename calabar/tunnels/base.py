@@ -2,7 +2,12 @@ import subprocess
 import os
 import signal
 
-from calabar.tunnels import TUN_TYPE_STR, ExecutableNotFound, TunnelTypeDoesNotMatch, is_really_running
+from calabar.tunnels import (
+    TUN_TYPE_STR,
+    ExecutableNotFound,
+    TunnelTypeDoesNotMatch,
+    is_really_running,
+)
 
 class TunnelBase(object):
     """The base Tunnel clase for encapsulating a specific type of tunnel.
