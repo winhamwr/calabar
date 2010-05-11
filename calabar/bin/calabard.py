@@ -6,7 +6,6 @@ import optparse
 import os
 import sys
 
-from daemon import DaemonContext
 from ConfigParser import SafeConfigParser
 
 from calabar.tunnels import TunnelManager
